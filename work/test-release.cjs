@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const C=require('./v2-core.js'),S=require('./v2-schema.js'),stats=require('./statistics-core.js'),sample=require('./sample240.json');
+const t=Object.fromEntries(Object.entries(sample).map(([k,csv])=>[k,C.readTable(k,csv,S)]));
+assert.equal(t.Batch.rows.length,240);
+for(const id of new Set(t.Batch.rows.map(r=>r.Equipment_ID))){const rows=t.Batch.rows.filter(r=>r.Equipment_ID===id).sort((a,b)=>Date.parse(a.Start_TS)-Date.parse(b.Start_TS));for(let i=1;i<rows.length;i++)assert(Date.parse(rows[i].Start_TS)>=Date.parse(rows[i-1].End_TS));}
+for(const r of t.Checksheet.rows){const hour=new Date(Date.parse(r.Valid_From_TS)+9*3600000).getUTCHours();assert([7,19].includes(hour));assert.equal(Date.parse(r.Valid_To_TS)-Date.parse(r.Valid_From_TS),43200000);}
+for(const mat of ['SILICA','ADDITIVE','DIW']){const counts={};for(const r of t.Material.rows.filter(r=>r.Material_ID===mat))counts[r.Lot_ID]=(counts[r.Lot_ID]||0)+1;assert(Object.values(counts).every(n=>n===6));}
+const q=C.parseCSV(sample.QC),csv=rows=>[q.headers,...rows.map(r=>q.headers.map(h=>r[h]))].map(a=>a.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');
+for(const value of ['', 'None','N/A','미기록']){const out=C.readTable('QC',csv([{...q.rows[0],Value:value}]),S).rows[0];assert.equal(out.Value,'');assert.equal(out.Qualifier,'NOT_MEASURED');}
+const rs=[10,12,11,14].map((y,time)=>({y,time,equipment:'A'})),cap=stats.capability(rs,{lsl:0,usl:20,within:'mr'});assert(Math.abs(cap.Cpk-8.25/(3*2/1.128))<1e-10);assert.equal(stats.regression([1,2,3,4].map(x=>({x,y:2*x+1}))).r2,1);
+const dir=path.resolve(__dirname,'../outputs/CMP_Batch_Investigator_v2_Update/CMP_Batch_Investigator_v2'),html=fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_v2.html'),'utf8'),dat=JSON.parse(fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_Update.dat'),'utf8'));assert.equal(dat.html,html);assert.equal(dat.sha256,crypto.createHash('sha256').update(html).digest('hex'));assert.equal(dat.version,'1.0');console.log('PASS sequential equipment, 07/19 shifts, six-lot groups, missing QC, calculations, DAT');

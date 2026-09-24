@@ -1,0 +1,13 @@
+{
+  "name": "cmp-manufacturing-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline CMP batch investigation and statistical review prototype",
+  "scripts": {
+    "build": "node work/build-restored.cjs",
+    "test": "node work/test-release.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
