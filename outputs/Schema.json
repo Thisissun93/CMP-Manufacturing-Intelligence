@@ -1,0 +1,571 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8 BOM",
+  "timezone": "Asia/Seoul (+09:00)",
+  "row_grain": "one summary per Batch per file",
+  "null": "empty field",
+  "fields": {
+    "Batch": [
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "제조 Batch 고유키. 50개, 중복 불가"
+      },
+      {
+        "name": "Product_ID",
+        "type": "string",
+        "definition": "가상 실리카계 산화막용 제품 SIM-OX-01"
+      },
+      {
+        "name": "Recipe_Rev",
+        "type": "string",
+        "definition": "제조 처방 개정 SIM-R01"
+      },
+      {
+        "name": "Customer_ID",
+        "type": "string",
+        "definition": "가상 고객 식별자. 개인정보 없음"
+      },
+      {
+        "name": "Equipment_ID",
+        "type": "string",
+        "definition": "주 혼합 탱크 ID. 설비 이력 연결"
+      },
+      {
+        "name": "Start_TS",
+        "type": "timestamp",
+        "definition": "첫 원료 투입 시작 시각"
+      },
+      {
+        "name": "End_TS",
+        "type": "timestamp",
+        "definition": "충전 완료 시각. QC 승인 시각과 구별"
+      },
+      {
+        "name": "Operator_ID",
+        "type": "string",
+        "definition": "가상 제조 작업자 코드"
+      },
+      {
+        "name": "Target_Mass_kg",
+        "type": "number",
+        "definition": "계획 투입 질량, kg"
+      },
+      {
+        "name": "Filled_Mass_kg",
+        "type": "number",
+        "definition": "최종 충전 질량, kg. 샘플·손실 제외"
+      },
+      {
+        "name": "Disposition",
+        "type": "string",
+        "definition": "RELEASED 또는 HOLD. 합성 출하 판정"
+      },
+      {
+        "name": "Reference_Eligible",
+        "type": "boolean",
+        "definition": "true: 비교 기준 후보로 지정한 1~40번"
+      },
+      {
+        "name": "Investigation_Tag",
+        "type": "string",
+        "definition": "NONE 또는 합성 조사 사례 유형"
+      },
+      {
+        "name": "Schema_Version",
+        "type": "string",
+        "definition": "고정 CSV 계약 버전 1.0"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "모든 행 SYNTHETIC. 실측 데이터 아님"
+      }
+    ],
+    "Material": [
+      {
+        "name": "Material_Record_ID",
+        "type": "string",
+        "definition": "Batch별 원료 투입 요약 고유키"
+      },
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "Batch.csv 외래키. 표본에서 1:1"
+      },
+      {
+        "name": "Silica_Lot_ID",
+        "type": "string",
+        "definition": "구입한 실리카 분산액 Lot. 복수 Batch 공유"
+      },
+      {
+        "name": "Silica_Supplier_ID",
+        "type": "string",
+        "definition": "가상 원료 공급사 ID"
+      },
+      {
+        "name": "Silica_COA_ID",
+        "type": "string",
+        "definition": "원료 시험성적서 식별자. 실제 문서 없음"
+      },
+      {
+        "name": "Silica_Expiry_Date",
+        "type": "date",
+        "definition": "실리카 원료 사용기한, 날짜 포함 유효"
+      },
+      {
+        "name": "Silica_Feed_Solids_wt_pct",
+        "type": "number",
+        "definition": "공급 분산액의 고형분 질량 백분율"
+      },
+      {
+        "name": "Silica_Charge_kg",
+        "type": "number",
+        "definition": "실리카 분산액 투입량, kg"
+      },
+      {
+        "name": "Additive_Lot_ID",
+        "type": "string",
+        "definition": "pH 조정제 용액 Lot. 가상 조성"
+      },
+      {
+        "name": "Additive_Charge_kg",
+        "type": "number",
+        "definition": "pH 조정제 용액 투입량, kg"
+      },
+      {
+        "name": "DIW_Supply_ID",
+        "type": "string",
+        "definition": "DI water 공급 계통 ID. Lot와 구별"
+      },
+      {
+        "name": "DIW_Charge_kg",
+        "type": "number",
+        "definition": "탈이온수 투입량, kg"
+      },
+      {
+        "name": "DIW_Conductivity_uS_cm",
+        "type": "number",
+        "definition": "25 C 환산 전도도, uS/cm"
+      },
+      {
+        "name": "Charge_Start_TS",
+        "type": "timestamp",
+        "definition": "첫 원료 투입 시작"
+      },
+      {
+        "name": "Charge_End_TS",
+        "type": "timestamp",
+        "definition": "최종 원료 투입 종료"
+      },
+      {
+        "name": "Incoming_Status",
+        "type": "string",
+        "definition": "ACCEPTED: 합성 입고 검사 승인"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "SYNTHETIC"
+      }
+    ],
+    "Process": [
+      {
+        "name": "Process_Record_ID",
+        "type": "string",
+        "definition": "Batch별 공정 요약 고유키"
+      },
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "Batch.csv 외래키"
+      },
+      {
+        "name": "Equipment_ID",
+        "type": "string",
+        "definition": "주 혼합 탱크 ID. Batch와 일치"
+      },
+      {
+        "name": "Mix_Start_TS",
+        "type": "timestamp",
+        "definition": "원료 투입 완료 후 최종 혼합 시작"
+      },
+      {
+        "name": "Mix_End_TS",
+        "type": "timestamp",
+        "definition": "최종 혼합 종료"
+      },
+      {
+        "name": "Mix_RPM_Setpoint",
+        "type": "number",
+        "definition": "혼합 회전수 설정값, rpm"
+      },
+      {
+        "name": "Mix_RPM_Mean",
+        "type": "number",
+        "definition": "혼합 구간 실제 회전수 평균, rpm"
+      },
+      {
+        "name": "Mix_Temp_Mean_C",
+        "type": "number",
+        "definition": "혼합 구간 온도 평균, C"
+      },
+      {
+        "name": "Mix_Temp_Max_C",
+        "type": "number",
+        "definition": "혼합 구간 최고 온도, C"
+      },
+      {
+        "name": "Hold_End_TS",
+        "type": "timestamp",
+        "definition": "혼합 후 대기 종료. 여과 시작과 같음"
+      },
+      {
+        "name": "Filter_Start_TS",
+        "type": "timestamp",
+        "definition": "여과 이송 시작"
+      },
+      {
+        "name": "Filter_End_TS",
+        "type": "timestamp",
+        "definition": "여과 이송 종료"
+      },
+      {
+        "name": "Filter_DP_Max_kPa",
+        "type": "number",
+        "definition": "여과 중 상류압-하류압 최대값, kPa"
+      },
+      {
+        "name": "Filter_Flow_Mean_L_min",
+        "type": "number",
+        "definition": "여과 중 체적유량 평균, L/min"
+      },
+      {
+        "name": "Fill_Start_TS",
+        "type": "timestamp",
+        "definition": "충전 시작. 여과 완료 후"
+      },
+      {
+        "name": "Fill_End_TS",
+        "type": "timestamp",
+        "definition": "충전 완료. Batch.End_TS와 같음"
+      },
+      {
+        "name": "Summary_Interval_s",
+        "type": "integer",
+        "definition": "평균·최대 산출의 가상 원시 측정 간격, 초"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "SYNTHETIC. 원시 시계열은 포함하지 않음"
+      }
+    ],
+    "Equipment": [
+      {
+        "name": "Equipment_Record_ID",
+        "type": "string",
+        "definition": "Batch 시점 설비 상태 스냅샷 고유키"
+      },
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "해당 설비를 사용한 Batch 외래키"
+      },
+      {
+        "name": "Equipment_ID",
+        "type": "string",
+        "definition": "재사용되는 주 혼합 탱크. 이 파일의 고유키 아님"
+      },
+      {
+        "name": "Snapshot_TS",
+        "type": "timestamp",
+        "definition": "해당 Batch 시업 전 상태 기록 시각"
+      },
+      {
+        "name": "Tank_Working_Capacity_L",
+        "type": "number",
+        "definition": "탱크 허용 작업용량, L"
+      },
+      {
+        "name": "Wetted_Material",
+        "type": "string",
+        "definition": "접액부 재질. 표본은 HDPE"
+      },
+      {
+        "name": "Filter_Assembly_ID",
+        "type": "string",
+        "definition": "여과 하우징/라인 ID. 탱크와 구별"
+      },
+      {
+        "name": "Filter_Lot_ID",
+        "type": "string",
+        "definition": "해당 Batch에 사용한 필터 Lot"
+      },
+      {
+        "name": "Filter_Grade_ID",
+        "type": "string",
+        "definition": "제조사별 여과 등급 코드. 공칭 기공으로 단정 안 함"
+      },
+      {
+        "name": "Filter_Installed_TS",
+        "type": "timestamp",
+        "definition": "사용 필터 설치 시각"
+      },
+      {
+        "name": "Filter_Throughput_Before_L",
+        "type": "number",
+        "definition": "Batch 시작 전 누적 여과량, L"
+      },
+      {
+        "name": "Filter_Qualified_Limit_L",
+        "type": "number",
+        "definition": "가상 검증 교체 기준량, L. 산업 기준 아님"
+      },
+      {
+        "name": "Last_Clean_End_TS",
+        "type": "timestamp",
+        "definition": "직전 세정 완료 시각"
+      },
+      {
+        "name": "Last_PM_TS",
+        "type": "timestamp",
+        "definition": "직전 예방보전 완료 시각"
+      },
+      {
+        "name": "Calibration_Due_Date",
+        "type": "date",
+        "definition": "공정 센서 교정 만료일. 날짜 포함 유효"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "SYNTHETIC"
+      }
+    ],
+    "QC": [
+      {
+        "name": "QC_Record_ID",
+        "type": "string",
+        "definition": "Batch별 최종 시료 시험 패널 고유키"
+      },
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "Batch.csv 외래키"
+      },
+      {
+        "name": "Sample_ID",
+        "type": "string",
+        "definition": "최종 충전 시료 고유 식별자"
+      },
+      {
+        "name": "Sample_TS",
+        "type": "timestamp",
+        "definition": "충전 말기에 채취한 시각"
+      },
+      {
+        "name": "Result_TS",
+        "type": "timestamp",
+        "definition": "패널 결과 확정 시각. 제조 종료 이후 가능"
+      },
+      {
+        "name": "Sample_Point",
+        "type": "string",
+        "definition": "FINAL_FILL: 충전 말기 시료"
+      },
+      {
+        "name": "Method_Set_ID",
+        "type": "string",
+        "definition": "측정법 묶음 SIM-QC-M01. 아래 조건 참조"
+      },
+      {
+        "name": "Spec_Rev",
+        "type": "string",
+        "definition": "가상 판정 규격 SIM-Q01. 고객 규격 아님"
+      },
+      {
+        "name": "pH_25C",
+        "type": "number",
+        "definition": "25 C 원액 pH. 무차원"
+      },
+      {
+        "name": "Solids_wt_pct",
+        "type": "number",
+        "definition": "건조 잔분 질량/시료 질량 x100, wt%"
+      },
+      {
+        "name": "Viscosity_mPa_s",
+        "type": "number",
+        "definition": "25 C, 고정 전단속도 100 /s의 점도"
+      },
+      {
+        "name": "PSD_D50_nm",
+        "type": "number",
+        "definition": "레이저 회절, 체적 기준 누적 50% 직경, nm"
+      },
+      {
+        "name": "PSD_D90_nm",
+        "type": "number",
+        "definition": "같은 분포의 누적 90% 직경, nm"
+      },
+      {
+        "name": "PSD_Dilution_Factor",
+        "type": "number",
+        "definition": "최종 부피/원시료 부피, 희석배수"
+      },
+      {
+        "name": "LPC_gt_0p5um_count_mL",
+        "type": "number",
+        "definition": "0.5 um 초과 입자 수/mL. 원액 환산"
+      },
+      {
+        "name": "LPC_gt_1p0um_count_mL",
+        "type": "number",
+        "definition": "1.0 um 초과 입자 수/mL. 원액 환산"
+      },
+      {
+        "name": "LPC_Dilution_Factor",
+        "type": "number",
+        "definition": "SPOS 측정의 부피 희석배수"
+      },
+      {
+        "name": "Zeta_mV",
+        "type": "number_nullable",
+        "definition": "희석 시료의 제타 전위, mV"
+      },
+      {
+        "name": "Zeta_Dilution_Factor",
+        "type": "number",
+        "definition": "제타 전위 측정의 부피 희석배수"
+      },
+      {
+        "name": "Zeta_Test_pH",
+        "type": "number_nullable",
+        "definition": "제타 측정 셀 내 pH. 원액 pH와 구별"
+      },
+      {
+        "name": "Zeta_Status",
+        "type": "string",
+        "definition": "MEASURED 또는 NOT_MEASURED"
+      },
+      {
+        "name": "Fe_ug_kg",
+        "type": "number",
+        "definition": "ICP-MS 철 농도, ug/kg. 원액 질량 기준"
+      },
+      {
+        "name": "Fe_Qualifier",
+        "type": "string",
+        "definition": "EQ: 정량값. 실제 운영은 LT 등 추가"
+      },
+      {
+        "name": "Fe_LOQ_ug_kg",
+        "type": "number",
+        "definition": "정량한계, ug/kg. 미만 결과의 0 치환 금지"
+      },
+      {
+        "name": "QC_Status",
+        "type": "string",
+        "definition": "PASS / FAIL / INCOMPLETE. 합성 패널 판정"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "SYNTHETIC"
+      }
+    ],
+    "Checksheet": [
+      {
+        "name": "Checksheet_Record_ID",
+        "type": "string",
+        "definition": "Batch별 체크시트 요약 고유키"
+      },
+      {
+        "name": "Batch_ID",
+        "type": "string",
+        "definition": "Batch.csv 외래키"
+      },
+      {
+        "name": "Equipment_ID",
+        "type": "string",
+        "definition": "확인 대상 주 혼합 탱크 ID"
+      },
+      {
+        "name": "Form_Rev",
+        "type": "string",
+        "definition": "시업·작업·완료 체크시트 개정 SIM-CK01"
+      },
+      {
+        "name": "Prestart_TS",
+        "type": "timestamp",
+        "definition": "시업 전 확인 시각"
+      },
+      {
+        "name": "Line_Clearance",
+        "type": "string",
+        "definition": "PASS: 전 제품·잔류물·라벨 제거 확인"
+      },
+      {
+        "name": "Cleaning_Verified",
+        "type": "string",
+        "definition": "PASS: 세정 기록 확인"
+      },
+      {
+        "name": "Calibration_Verified",
+        "type": "string",
+        "definition": "PASS: 교정 유효기간 확인"
+      },
+      {
+        "name": "Filter_Identity_Verified",
+        "type": "string",
+        "definition": "PASS: 처방과 필터 식별 일치"
+      },
+      {
+        "name": "Addition_Order_Verified",
+        "type": "string",
+        "definition": "PASS: DIW-실리카-조정제 순서 확인"
+      },
+      {
+        "name": "Inprocess_Check_TS",
+        "type": "timestamp",
+        "definition": "혼합 중 확인 시각"
+      },
+      {
+        "name": "Inprocess_pH",
+        "type": "number",
+        "definition": "혼합 중 측정 pH. 최종 QC와 다른 시료"
+      },
+      {
+        "name": "Inprocess_Temp_C",
+        "type": "number",
+        "definition": "같은 시점 실제 온도, C"
+      },
+      {
+        "name": "Closeout_TS",
+        "type": "timestamp",
+        "definition": "제조 종료 후 체크시트 마감"
+      },
+      {
+        "name": "Deviation_ID",
+        "type": "string_nullable",
+        "definition": "편차 보고서 식별자. 없으면 빈 칸"
+      },
+      {
+        "name": "Reviewer_ID",
+        "type": "string",
+        "definition": "가상 검토자 코드"
+      },
+      {
+        "name": "Comment",
+        "type": "string",
+        "definition": "관찰 내용. 원인 확정 표현 금지"
+      },
+      {
+        "name": "Data_Origin",
+        "type": "string",
+        "definition": "SYNTHETIC"
+      }
+    ]
+  }
+}
