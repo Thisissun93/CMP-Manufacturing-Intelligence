@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+private-data/
+reports/
+backups/
+CMP_Review_*.json
+Engineer_Review_*.html
+outputs/CMP_Batch_Investigator_v2_Update/
+*.log
+.DS_Store
