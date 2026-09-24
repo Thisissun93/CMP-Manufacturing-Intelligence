@@ -1,5 +1,8 @@
 # CMP Manufacturing Intelligence — Ver1.0
 
+[![프로그램 바로 실행](https://img.shields.io/badge/프로그램-바로_실행-008577?style=for-the-badge)](https://thisissun93.github.io/CMP-Manufacturing-Intelligence/)
+
+설치 없이 브라우저에서 실행합니다. 프로그램에서 ‘통계용 240 Batch 불러오기’를 눌러 시작하세요.
 제작자: 김태양. CSV 기반 제조 이력 조사·통계 분석·RCA 검토 지원을 위한 오프라인 시연 프로그램입니다. 실제 공장 데이터로 검증된 제조 품질 시스템이 아닙니다. 현업의 작업 흐름을 학습하고 구현한 포트폴리오입니다.
 
 ## 시작하기
