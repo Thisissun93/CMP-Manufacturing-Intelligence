@@ -4,6 +4,7 @@
   "private": true,
   "description": "Offline CMP batch investigation and statistical review prototype",
   "scripts": {
+    "generate": "node work/generate-sample240.cjs",
     "build": "node work/build-restored.cjs",
     "test": "node work/test-release.cjs"
   },
