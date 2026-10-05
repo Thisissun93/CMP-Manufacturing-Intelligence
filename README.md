@@ -6,21 +6,21 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 
 제작: 김태양 · FC-BGA 기판 공정/품질 엔지니어 6년 (설비 셋업, JMP 기반 DOE/SPC, 소재 Qualification, 수율 개선)
 
-> **English summary** — An offline, browser-based investigation tool for CMP slurry batch records. It links raw-material lots, process data, equipment events and QC results, then helps narrow down root-cause candidates for out-of-spec batches with lot-group comparison, capability indices, control charts and X–Y regression, and drafts an RCA review. The demo runs on 240 synthetic batches containing two planted quality events (an additive-lot pH excursion and a filter-loading LPC excursion), and the tool separates both causes from confounding factors.
+> **English summary** — An offline, browser-based investigation tool for CMP slurry batch records. It links raw-material lots, process data, equipment events and QC results, then helps narrow down root-cause candidates for out-of-spec batches with lot-group comparison, capability indices, control charts and X–Y regression, and drafts an RCA review. It then turns the suspect lot around — listing every batch made from it with its shipment status — and closes the CAPA with a data-driven effectiveness check. The demo runs on 240 synthetic batches containing two planted quality events (an additive-lot pH excursion and a filter-loading LPC excursion); the tool separates both causes from confounding factors, and surfaces the batches that passed QC on the suspect lot and were already shipped.
 
 ---
 
-## 케이스 스터디 · 240 Batch 중 15건 HOLD, 원인은 두 가지
+## 케이스 스터디 · 240 Batch 중 13건 HOLD, 원인은 두 가지
 
 시연 데이터에는 실제 현장에서 자주 만나는 두 종류의 이탈이 섞여 있습니다. 프로그램에서 **‘통계용 240 Batch 불러오기’**를 누르면 같은 과정을 그대로 재현할 수 있습니다.
 
-### 사건 A · pH 상한 이탈 9건 → 첨가제 LOT 하나로 좁혀짐
+### 사건 A · pH 상한 이탈 7건 → 첨가제 LOT 하나로 좁혀짐
 
 **1. 이탈 Batch 확인.** SIM-S0197 보고서에서 pH 10.54(USL 10.5)가 확인됩니다. 과거 정상 기준군(n=180) 대비 +7σ로, 측정 산포로는 설명되지 않는 수준입니다.
 
 <img src="docs/images/01_batch_report.png" width="760" alt="Batch 보고서">
 
-**2. 원료별로 같은 질문을 던짐.** 그룹 요인을 ADDITIVE로 두면 이탈 9건이 **ADDITIVE-LOT-23 하나에 100% 집중**됩니다. 그 LOT의 9 Batch는 모두 이탈했고, 다른 27개 LOT에서는 이탈이 0건입니다.
+**2. 원료별로 같은 질문을 던짐.** 그룹 요인을 ADDITIVE로 두면 이탈 7건이 **ADDITIVE-LOT-23 하나에 100% 집중**됩니다. 그 LOT으로 만든 9 Batch 중 7건이 이탈했고, 다른 27개 LOT에서는 이탈이 0건입니다. **나머지 2건은 규격을 통과했습니다** — 이 2건이 사건 C의 출발점입니다.
 
 <img src="docs/images/02_ph_additive_lot.png" width="760" alt="ADDITIVE LOT별 그룹 비교">
 
@@ -28,7 +28,7 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 
 <img src="docs/images/03_ph_silica_lot.png" width="760" alt="SILICA LOT별 그룹 비교">
 
-**결론과 조치안.** 원인 후보는 ADDITIVE-LOT-23의 알칼리 함량 편차입니다. 다음 순서로 확인합니다: 해당 LOT CoA·입고검사 기록 재검토 → 보관 샘플로 첨가제 단독 pH·적정 재시험 → 공급사 SCAR 발행 → 입고검사에 알칼리도 항목 추가 검토.
+**결론과 조치안.** 원인 후보는 ADDITIVE-LOT-23의 알칼리 함량 편차입니다. 원인을 좁힌 다음에 바로 따라오는 질문(그 LOT으로 만든 Batch가 총 몇 개이고 몇 개가 이미 나갔는가)은 사건 C에서 다룹니다. 다음 순서로 확인합니다: 해당 LOT CoA·입고검사 기록 재검토 → 보관 샘플로 첨가제 단독 pH·적정 재시험 → 공급사 SCAR 발행 → 입고검사에 알칼리도 항목 추가 검토.
 
 ### 사건 B · LPC(≥1.0 µm) 상한 이탈 6건 → MIX-2 필터 교체 지연
 
@@ -42,6 +42,39 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 
 **결론과 조치안.** 필터 교체를 Batch 수 기준에서 **차압 기준(예: 70 kPa 도달 시 교체)으로 전환**합니다. 차압 경보 시 출하 전 LPC 추가 검사를 OCAP에 반영합니다. 이 내용은 프로그램의 3단계 RCA/검증 화면에서 FMEA·Control Plan 초안으로 정리할 수 있습니다.
 
+
+### 사건 C · ADDITIVE-LOT-23의 영향 범위 — 이탈 7건 뒤에 숨은 2건
+
+사건 A·B가 "원인을 어떻게 좁혔나"라면, 사건 C는 **"그래서 무엇을 했나"**입니다. 원인 후보가 원료 LOT으로 좁혀지면 다음 질문은 원인이 아니라 범위입니다. 그 LOT으로 만든 Batch가 총 몇 개이고, 그중 몇 개가 이미 출하됐는가.
+
+**1. 방향을 뒤집어 전수 조회.** 4단계에서 ADDITIVE-LOT-23을 지정하면 그 LOT이 투입된 Batch 9건이 생산 순번대로 모두 나옵니다. 1~3단계가 *불량 Batch → 원인*으로 갔다면, 여기서는 *원인 → 전체 Batch*로 갑니다.
+
+<img src="docs/images/05_impact_scope.png" width="760" alt="LOT 영향 범위">
+
+**2. 규격을 통과한 Batch가 더 위험합니다.** 이탈 7건은 이미 HOLD라 나가지 않습니다. 문제는 통과한 2건입니다.
+
+| Batch | pH | 판정 | 규격 여유 | 출하 상태 |
+|---|---|---|---|---|
+| SIM-S0195 | 10.2446 | 정상 | 25.5% | 출하 완료 |
+| SIM-S0196 | 10.4614 | **규격 내 주의** | **3.9%** | **출하 완료** |
+| SIM-S0197 ~ S0203 | 10.5168 ~ 10.6736 | 이탈 7건 | — | 보류 |
+
+SIM-S0196은 USL 10.5를 **0.0386 차이로 통과**했고 이미 고객에게 나갔습니다. 규격 판정만 보면 정상이지만, 같은 의심 LOT을 썼고 여유가 4% 미만입니다. 이 Batch의 존재를 모르면 봉쇄 범위를 이탈 7건으로 한정하게 됩니다.
+
+LOT 교체 직후 이전 원료가 배관·탱크에 남아 영향이 점진적으로 올라오기 때문에(생성기의 `ADDITIVE_RAMP`), 같은 의심 LOT 안에서도 앞 Batch는 규격을 통과합니다. 현장에서 품질 사고가 이 구간에서 나는 이유이기도 합니다.
+
+**3. CAPA를 데이터로 닫습니다.** 봉쇄 → 원인확정 → 조치실행까지 기록한 뒤, 조치 적용 시점(생산 순번 203) 이후 20 Batch를 검증 구간으로 두고 세 조건을 자동 판정합니다.
+
+<img src="docs/images/06_capa_effectiveness.png" width="760" alt="CAPA 효과성 검증">
+
+- 동일 모드 이탈 0건 — 검증 구간 20건 중 이탈 0건
+- Ppk 1.33 이상 — 실측 Ppk 2.41 (전체 표준편차 기준)
+- 관리도 이상 규칙 미발생 — 3σ 초과 0건, 연속 9점 편향 0건
+
+세 조건을 **모두** 만족할 때만 종결로 넘어갑니다. CAPA에서 가장 형식적으로 흐르는 단계가 효과성 검증인데("재발 없음" 한 줄로 닫는 경우가 많습니다), 그 판정을 데이터에 맡기는 것이 이 단계의 목적입니다.
+
+**결론과 조치안.** 봉쇄 범위를 이탈 7건이 아니라 LOT 전체 9건으로 넓히고, 출하된 2건은 고객 통보 여부를 검토합니다. 입고검사에 알칼리도 항목을 추가하고 공급사에 SCAR을 발행한 뒤, 위 세 조건으로 효과성을 확인하고 종결합니다.
+
 ---
 
 ## 무엇을 할 수 있나
@@ -51,6 +84,7 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 | 1 · Batch 보고서 | Batch·Material·Process·Equipment·QC·Checksheet 6개 CSV를 Batch 기준으로 연결. QC 규격 이탈, 과거 정상 기준군 대비 편차, 공정 상한 초과, 교대 점검 누락 탐지 |
 | 2 · LOT 통계 분석 | Cp/Cpk·Pp/Ppk, I-MR 관리도, 분포·추세, X–Y 회귀(Pearson/Spearman/R²), **설비 또는 원료 LOT별 그룹 비교**, %Contribution(ANOVA 기반) |
 | 3 · RCA / 검증 | 문헌 기반 원인 후보, OCAP/FMEA/Control Plan 초안, 편집 가능한 검토 문서, 검토 이력 백업·복원 |
+| 4 · 영향 범위 / CAPA | **원료 LOT 역방향 전수 조회**(투입 Batch·출하 상태·규격 여유), 규격 내 주의 Batch 분류, CAPA 상태 관리(봉쇄~종결), **데이터 기반 효과성 검증**(동일 모드 이탈·Ppk·관리도 규칙), CAPA JSON 내보내기 |
 
 데이터 무결성 원칙: QC는 승인된 최종 결과가 정확히 하나일 때만 사용합니다. 재시험 통과가 최초 이탈 기록을 지우지 않습니다. 결측은 0으로 채우지 않습니다. 자세한 내용은 [DATA_POLICY.md](DATA_POLICY.md)를 참고하세요.
 
@@ -59,7 +93,7 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 - **바로 실행:** 위 배지 링크(GitHub Pages)를 엽니다.
 - **오프라인 실행:** `app/CMP_Batch_Investigator_v2.html`을 Edge 또는 Chrome에서 엽니다.
 
-‘통계용 240 Batch 불러오기’ → Batch ID 입력 → **Batch 보고서** → **2단계 LOT 통계 분석** → **3단계 RCA/검증** 순서로 진행합니다. `samples/`의 CSV 6개를 직접 끌어다 놓아도 됩니다.
+‘통계용 240 Batch 불러오기’ → Batch ID 입력 → **Batch 보고서** → **2단계 LOT 통계 분석** → **3단계 RCA/검증** → **4단계 영향 범위/CAPA** 순서로 진행합니다. `samples/`의 CSV 6개를 직접 끌어다 놓아도 됩니다.
 
 ## 개발
 
@@ -71,11 +105,12 @@ npm run build      # 단일 HTML 빌드
 npm test           # 계산·데이터·시나리오 회귀 시험
 ```
 
-`work/`에 계산·UI·빌드 소스가 있고, `work/generate-sample240.cjs`가 시연 데이터를 만듭니다. 시험은 두 사건이 설계대로 분리되는지(pH 이탈 ↔ ADDITIVE-LOT-23, LPC 이탈 ↔ MIX-2 필터 차압)와 데이터가 생성기 결과와 일치하는지를 확인합니다. 빌드 결과는 `outputs/CMP_Batch_Investigator_v2_Update/`에 생성되고, 배포용 사본은 `app/`입니다.
+`work/`에 계산·UI·빌드 소스가 있고, `work/generate-sample240.cjs`가 시연 데이터를 만듭니다. 시험은 두 사건이 설계대로 분리되는지(pH 이탈 ↔ ADDITIVE-LOT-23, LPC 이탈 ↔ MIX-2 필터 차압), 의심 LOT 안에 규격을 통과한 출하 Batch가 존재하는지, 보류 Batch가 출하되지 않았는지, 데이터가 생성기 결과와 일치하는지를 확인합니다. 빌드 결과는 `outputs/CMP_Batch_Investigator_v2_Update/`에 생성되고, 배포용 사본은 `app/`입니다.
 
 ## 한계
 
-- 모든 데이터는 **합성 데이터**이며, 규격 수치는 시연용 가정입니다. 실제 공장 데이터로 검증된 시스템이 아닙니다.
+- 모든 데이터는 **합성 데이터**이며, 규격 수치와 출하 상태(`Ship_Status`/`Ship_TS`)는 시연용 가정입니다. 실제 공장 데이터로 검증된 시스템이 아닙니다.
+- 효과성 검증의 Ppk는 전체 표준편차 기준이며, 군내 변동 기준 Cpk와 다릅니다. 관리한계는 `Reference_Eligible=true`·RELEASED 기준군에서 산출합니다.
 - 그룹 비교·상관·R²는 원인 후보를 좁히는 도구이며 원인 확정이 아닙니다. 확정에는 재시험·CoA·현장 확인이 필요합니다.
 - 측정시스템(MSA)·정규성·안정성은 자동 검증되지 않습니다.
 - 브라우저 저장은 인증된 감사 추적이 아니며, MES 연동·전자서명·사용자 권한은 없습니다.
@@ -85,4 +120,4 @@ npm test           # 계산·데이터·시나리오 회귀 시험
 
 ## 이용 조건
 
-오픈소스 라이선스는 아직 정하지 않았습니다. 포트폴리오 열람과 시연 목적의 이용을 환영합니다.
+All rights reserved. 포트폴리오 열람과 시연 목적의 이용만 허용합니다. 코드·데이터의 재배포나 2차 저작물 작성은 사전 협의가 필요합니다.
