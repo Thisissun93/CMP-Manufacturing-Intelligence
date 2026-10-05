@@ -19,4 +19,20 @@ const regenerated=require('./generate-sample240.cjs').generate();for(const k of 
 const q=C.parseCSV(sample.QC),csv=rows=>[q.headers,...rows.map(r=>q.headers.map(h=>r[h]))].map(a=>a.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');
 for(const value of ['', 'None','N/A','미기록']){const out=C.readTable('QC',csv([{...q.rows[0],Value:value}]),S).rows[0];assert.equal(out.Value,'');assert.equal(out.Qualifier,'NOT_MEASURED');}
 const rs=[10,12,11,14].map((y,time)=>({y,time,equipment:'A'})),cap=stats.capability(rs,{lsl:0,usl:20,within:'mr'});assert(Math.abs(cap.Cpk-8.25/(3*2/1.128))<1e-10);assert.equal(stats.regression([1,2,3,4].map(x=>({x,y:2*x+1}))).r2,1);
-const dir=path.resolve(__dirname,'../outputs/CMP_Batch_Investigator_v2_Update/CMP_Batch_Investigator_v2'),html=fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_v2.html'),'utf8'),dat=JSON.parse(fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_Update.dat'),'utf8'));assert.equal(dat.html,html);assert.equal(dat.sha256,crypto.createHash('sha256').update(html).digest('hex'));assert.equal(dat.version,'1.0');console.log('PASS sequential equipment, 07/19 shifts, staggered material lots, pH↔ADDITIVE-LOT-23, LPC↔MIX-2 filter DP, deterministic sample, missing QC, calculations, DAT');
+// 사건 A 확장: 의심 LOT 안에 '규격은 통과했지만 이미 출하된' Batch가 있어야 영향 범위 산정이 의미를 가진다
+const lot23=t.Batch.rows.filter(b=>lotOf(b.Batch_ID,'ADDITIVE')==='ADDITIVE-LOT-23');
+assert.equal(lot23.length,9);
+const phOf=bid=>qn.find(r=>r.Batch_ID===bid&&r.Analyte_ID==='pH');
+const passed=lot23.filter(b=>!oos(phOf(b.Batch_ID)));
+assert(passed.length>=2,'의심 LOT 안에 규격 통과 Batch가 있어야 함');
+assert(passed.some(b=>b.Ship_Status==='SHIPPED'),'통과 Batch 중 출하된 건이 있어야 함');
+const band=r=>Number(r.USL)-Number(r.LSL), margin=r=>Math.min(Number(r.USL)-r.v,r.v-Number(r.LSL))/band(r);
+assert(passed.some(b=>margin(phOf(b.Batch_ID))<0.05),'통과 Batch 중 규격 여유 5% 미만인 건이 있어야 함');
+for(const b of t.Batch.rows){
+ assert(['SHIPPED','IN_STOCK','HOLD'].includes(b.Ship_Status),'Ship_Status 값이 정의된 범위여야 함');
+ assert.equal(b.Ship_Status==='HOLD',b.Disposition==='HOLD','보류 Batch는 출하되지 않아야 함');
+ assert.equal(b.Ship_Status==='SHIPPED',b.Ship_TS!=='','출하된 Batch만 출하 시각을 가져야 함');
+}
+const dir=path.resolve(__dirname,'../outputs/CMP_Batch_Investigator_v2_Update/CMP_Batch_Investigator_v2'),html=fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_v2.html'),'utf8'),dat=JSON.parse(fs.readFileSync(path.join(dir,'CMP_Batch_Investigator_Update.dat'),'utf8'));assert.equal(dat.html,html);assert.equal(dat.sha256,crypto.createHash('sha256').update(html).digest('hex'));assert.equal(dat.version,'1.0');assert(html.includes('CMPImpact')&&html.includes('impactPanel'),'4단계 모듈이 빌드에 포함되어야 함');
+assert(html.includes('CMPSetStep')&&html.includes('--r-ink'),'가독성 레이어가 빌드에 포함되어야 함');
+console.log('PASS sequential equipment, 07/19 shifts, staggered material lots, pH↔ADDITIVE-LOT-23, LPC↔MIX-2 filter DP, deterministic sample, missing QC, calculations, DAT, 영향범위(출하상태·규격여유), 4단계·가독성 번들');

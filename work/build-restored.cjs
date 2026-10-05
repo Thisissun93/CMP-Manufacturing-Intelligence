@@ -22,6 +22,9 @@ html=html.replace('</style>','#statsPanel select{min-width:0;width:100%}#statsPa
 html=html.replace('</html>','<script>'+read('work/editable-doc.js')+'</script><script>'+read('work/cmp-knowledge.js')+'</script><script>'+read('work/review-rca.js')+'</script></html>');
 html=html.replace('</style>','#rcaPanel label{display:block;margin:10px 0}#rcaPanel textarea{width:100%;box-sizing:border-box}#rcaPanel{overflow:auto}#draftEditor{overflow-wrap:anywhere}#evidenceSummary li{margin:10px 0}</style>');
 html=html.replace('<br>지정 목적: CMP 제조 이력 조사·모니터링','<br><span id="referenceNotice">가상 데이터와 조건을 사용하는 프로그램입니다. 참고용으로만 사용해 주세요.</span>');
+html=html.replace('</style>',()=>read('work/readability.css')+'</style>');
+html += '<script>'+read('work/impact-capa.js')+'</script>';
+html += '<script>'+read('work/readability.js')+'</script>';
 html += '<script>'+read('work/readiness.js')+'</script>';
 const output=path.join(root,'outputs/CMP_Batch_Investigator_v2_Update/CMP_Batch_Investigator_v2');fs.mkdirSync(output,{recursive:true});
 fs.writeFileSync(path.join(output,'CMP_Batch_Investigator_v2.html'),html);
