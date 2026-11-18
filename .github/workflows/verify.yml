@@ -14,3 +14,10 @@ jobs:
           node-version: 24
       - run: npm run build
       - run: npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: independent reference values are up to date (pandas, scipy, statsmodels)
+        run: |
+          pip install pandas numpy scipy statsmodels
+          python work/reference/compute_reference.py --check

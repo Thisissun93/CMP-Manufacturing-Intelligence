@@ -1,6 +1,7 @@
 # CMP Manufacturing Intelligence
 
 [![프로그램 바로 실행](https://img.shields.io/badge/프로그램-바로_실행-008577?style=for-the-badge)](https://thisissun93.github.io/CMP-Manufacturing-Intelligence/)
+[![Verify](https://github.com/Thisissun93/CMP-Manufacturing-Intelligence/actions/workflows/verify.yml/badge.svg)](https://github.com/Thisissun93/CMP-Manufacturing-Intelligence/actions/workflows/verify.yml)
 
 CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화면에 연결하고, 규격 이탈의 원인 후보를 **데이터로 좁혀 가는 과정**을 보여주는 오프라인 조사 도구입니다. 설치 없이 브라우저에서 실행됩니다.
 
@@ -9,6 +10,15 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 > **English summary** — An offline, browser-based investigation tool for CMP slurry batch records. It links raw-material lots, process data, equipment events and QC results, then helps narrow down root-cause candidates for out-of-spec batches with lot-group comparison, capability indices, control charts and X–Y regression, and drafts an RCA review. It then turns the suspect lot around — listing every batch made from it with its shipment status — and closes the CAPA with a data-driven effectiveness check. The demo runs on 240 synthetic batches containing two planted quality events (an additive-lot pH excursion and a filter-loading LPC excursion); the tool separates both causes from confounding factors, and surfaces the batches that passed QC on the suspect lot and were already shipped.
 
 ---
+
+## 측정과 검증
+
+| 항목 | 결과 |
+|---|---|
+| 업무 시나리오 | 이탈 Batch 1건 → 원료 3종 LOT 비교 → 원인 LOT의 영향 범위(출하분 포함) → 공정 변수 회귀까지 **약 0.07초** (CSV 6종 6,039행 읽기 포함). 수작업으로는 작성자 경험상 반나절 가까이 걸리던 일 ([측정](docs/BENCHMARK.md)) |
+| 통계 검증 | 공정능력·회귀·Spearman·분산성분 **23개 값**을 pandas·scipy·statsmodels 독립 계산과 대조해 모두 일치 (상대 오차 1e-9). CI가 커밋마다 다시 계산해 확인 ([VALIDATION.md](VALIDATION.md)) |
+
+합성 데이터 기준이고, 원인 판단과 출하분 처리는 사람이 합니다.
 
 ## 케이스 스터디 · 240 Batch 중 13건 HOLD, 원인은 두 가지
 

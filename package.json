@@ -6,7 +6,8 @@
   "scripts": {
     "generate": "node work/generate-sample240.cjs",
     "build": "node work/build-restored.cjs",
-    "test": "node work/test-release.cjs"
+    "test": "node work/test-release.cjs && node work/test-reference.cjs",
+    "bench": "node work/bench-investigation.cjs"
   },
   "engines": {
     "node": ">=22"
