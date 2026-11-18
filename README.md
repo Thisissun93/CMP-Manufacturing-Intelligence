@@ -9,7 +9,7 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 
 > **English summary** — Offline browser tool to investigate out-of-spec CMP slurry batches. It links raw-material lots, process data, equipment events and QC results. Then it narrows down root-cause candidates and finds every batch made from the suspect lot, including batches already shipped.
 >
-> - **Result:** From one bad batch, it finds the root-cause lot (all 7 pH OOS batches came from one additive lot) and 2 shipped batches from the same lot in about 0.07 seconds (6 CSV files, 6,039 rows). ([benchmark](docs/BENCHMARK.md))
+> - **Result:** From one bad batch, it compares lots of all three raw materials, narrows the pH case down to one suspect additive lot (all 7 pH OOS batches used it), and lists its impact scope, including 2 batches already shipped, in about 0.07 seconds (6 CSV files, 6,039 rows). An engineer still confirms the cause. ([benchmark](docs/BENCHMARK.md))
 > - **Check:** 23 values (capability, regression, Spearman, variance components) match pandas, scipy and statsmodels. CI checks them on every commit. ([validation](VALIDATION.md))
 > - All data is synthetic. The numbers check the method and the calculations, not accuracy in a real factory.
 
