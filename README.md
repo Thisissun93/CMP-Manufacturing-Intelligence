@@ -7,7 +7,11 @@ CMP 슬러리 Batch의 제조 이력(원료 LOT·공정·설비·QC)을 한 화�
 
 제작: 김태양 · FC-BGA 기판 공정/품질 엔지니어 6년 (설비 셋업, JMP 기반 DOE/SPC, 소재 Qualification, 수율 개선)
 
-> **English summary** — An offline, browser-based investigation tool for CMP slurry batch records. It links raw-material lots, process data, equipment events and QC results, then helps narrow down root-cause candidates for out-of-spec batches with lot-group comparison, capability indices, control charts and X–Y regression, and drafts an RCA review. It then turns the suspect lot around — listing every batch made from it with its shipment status — and closes the CAPA with a data-driven effectiveness check. The demo runs on 240 synthetic batches containing two planted quality events (an additive-lot pH excursion and a filter-loading LPC excursion); the tool separates both causes from confounding factors, and surfaces the batches that passed QC on the suspect lot and were already shipped.
+> **English summary** — Offline browser tool to investigate out-of-spec CMP slurry batches. It links raw-material lots, process data, equipment events and QC results. Then it narrows down root-cause candidates and finds every batch made from the suspect lot, including batches already shipped.
+>
+> - **Result:** From one bad batch, it compares lots of all three raw materials, narrows the pH case down to one suspect additive lot (all 7 pH OOS batches used it), and lists its impact scope, including 2 batches already shipped, in about 0.07 seconds (6 CSV files, 6,039 rows). An engineer still confirms the cause. ([benchmark](docs/BENCHMARK.md))
+> - **Check:** 23 values (capability, regression, Spearman, variance components) match pandas, scipy and statsmodels. CI checks them on every commit. ([validation](VALIDATION.md))
+> - All data is synthetic. The numbers check the method and the calculations, not accuracy in a real factory.
 
 ---
 
